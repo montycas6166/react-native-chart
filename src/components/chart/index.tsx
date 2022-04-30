@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {Theme, useTheme} from '~/theme';
 import {DataItem} from '~/generate.data.helper';
@@ -29,11 +29,18 @@ const ChartComponent: React.FC<ChartComponentProps> & {
     onChartTypeChange,
     data = [],
   } = props;
-  const [headerValue, setHeaderValue] = useState(-1);
+  console.log('[ChartComponent] data', data);
+  const [headerValue, setHeaderValue] = useState((): number => {
+    return data.length > 0 ? data[data.length - 1].price : -1;
+  });
 
   const _onChartTypeChange = (_chartType: string) => {
     onChartTypeChange && onChartTypeChange(_chartType);
   };
+
+  useEffect(() => {
+    setHeaderValue(data.length > 0 ? data[data.length - 1].price : -1);
+  }, [data]);
 
   return (
     <View style={s?.root}>
@@ -51,7 +58,10 @@ const ChartComponent: React.FC<ChartComponentProps> & {
         )}
       </View>
       <View style={s?.chart}>
-        <AppChart data={data} />
+        <AppChart
+          data={data}
+          onChangeY={(value: number) => setHeaderValue(value)}
+        />
       </View>
       <View style={s?.buttonsContainer}>
         <View style={s?.buttons}>
@@ -94,12 +104,12 @@ export const createStyle = (theme: Theme) => {
       overflow: 'hidden',
     },
     header: {
-      // backgroundColor: '#54beff',
-      aspectRatio: 346 / 96,
+      // backgroundColor: '#9799a3',
+      aspectRatio: 346 / (96 - 24),
       padding: 10,
     },
     chart: {
-      aspectRatio: 346 / 227,
+      aspectRatio: 346 / (227 + 24),
     },
     headerValRow: {flexDirection: 'row'},
     headerVal: {

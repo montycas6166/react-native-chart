@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Theme, useTheme} from '~/theme';
 import {DataItem} from '~/generate.data.helper';
 import ChartGrouped from '~/components/chart/ChartGrouped';
@@ -42,11 +42,18 @@ const defaultLineColor = '#04e23b';
 type ChartComponentProps = {
   data?: Array<DataItem>;
   lineColor?: string;
+  lineWidth?: number;
+  onChangeY?: (y: number) => void;
 };
 
 const AppChart: React.FC<ChartComponentProps> = props => {
   const {s} = useTheme(createStyle);
-  const {data = [], lineColor = defaultLineColor} = props;
+  const {
+    data = [],
+    lineColor = defaultLineColor,
+    lineWidth = 2,
+    onChangeY,
+  } = props;
   console.log('[AppChart]RENDER', {data});
   const genData = useMemo(() => {
     const chartData = [
@@ -54,7 +61,7 @@ const AppChart: React.FC<ChartComponentProps> = props => {
         data: data.map(d => ({x: d.timestamp, y: d.price})),
         svg: {
           stroke: lineColor,
-          strokeWidth: 3,
+          strokeWidth: lineWidth,
           strokeLinecap: 'round',
           strokeLinejoin: 'miter',
         },
@@ -84,29 +91,32 @@ const AppChart: React.FC<ChartComponentProps> = props => {
       numberOfYTicks,
       numberOfXTicks,
     };
-  }, [data, lineColor]);
+  }, [data, lineColor, lineWidth]);
   return (
-    <ChartGrouped
-      showGrid={true}
-      xAccessor={({item}) => item.x}
-      yAccessor={({item}) => item.y}
-      xSelected={1648598400000}
-      selectedLineMarkerColor={'#eee'}
-      xMin={genData.xMin}
-      xMax={genData.xMax}
-      yMin={genData.yMin}
-      yMax={genData.yMax}
-      numberOfXTicks={genData.numberOfXTicks}
-      numberOfYTicks={genData.numberOfYTicks}
-      data={genData.chartData}
-      contentInset={{
-        left: 4,
-        right: 4,
-        bottom: 4,
-        top: 4,
-      }}
-      style={s?.root}
-    />
+    <View style={s?.root}>
+      <View style={s?.top} />
+      <ChartGrouped
+        showGrid={false}
+        xAccessor={({item}) => item.x}
+        yAccessor={({item}) => item.y}
+        // xSelected={1650672000000}
+        selectedLineMarkerColor={'#eee'}
+        xMin={genData.xMin}
+        xMax={genData.xMax}
+        yMin={genData.yMin}
+        yMax={genData.yMax}
+        numberOfXTicks={genData.numberOfXTicks}
+        numberOfYTicks={genData.numberOfYTicks}
+        data={genData.chartData}
+        contentInset={{
+          left: 10,
+          right: 10,
+          bottom: 10,
+          top: 10,
+        }}
+        style={s?.chart}
+      />
+    </View>
   );
 };
 
@@ -114,7 +124,14 @@ export const createStyle = (theme: Theme) => {
   return StyleSheet.create({
     root: {
       flex: 1,
-      backgroundColor: 'rgba(255,255,255,0.15)',
+      // backgroundColor: 'rgba(255,255,255,0.15)',
+    },
+    top: {
+      aspectRatio: 346 / 24,
+      // backgroundColor: 'rgba(62,81,148,0.46)',
+    },
+    chart: {
+      flex: 1,
     },
   });
 };

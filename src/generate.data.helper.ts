@@ -19,10 +19,11 @@ const generate1D = () => {
 const generate = (json: Array<any>) => {
   return json.map((item: any, index: number) => {
     const timestamp = moment(item.timeOpen).valueOf();
+    const price: number = item.quote.open;
     return {
       index,
       timestamp,
-      price: item.quote.open,
+      price: Math.round((price + Number.EPSILON) * 100) / 100,
     };
   });
 };
@@ -34,10 +35,10 @@ export const generateDataByType = (type: string): Array<DataItem> => {
     const json = require('~a/json/1M.json').data.quotes;
     return generate(json);
   } else if (type === ChartComponent.types._1W) {
-    const json = require('~a/json/1M.json').data.quotes;
+    const json = require('~a/json/1W.json').data.quotes;
     return generate(json);
   } else if (type === ChartComponent.types._1Y) {
-    const json = require('~a/json/1M.json').data.quotes;
+    const json = require('~a/json/1Y.json').data.quotes;
     return generate(json);
   } else {
     const json = require('~a/json/3M.json').data.quotes;

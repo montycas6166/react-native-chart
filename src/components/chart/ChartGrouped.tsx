@@ -167,7 +167,6 @@ const ChartGrouped: React.FC<Props> = props => {
         {layout.height > 0 && layout.width > 0 && (
           <Svg style={{height: layout.height, width: layout.width}}>
             {showGrid && renderGrid(extraProps)}
-
             {paths.path.map((path: any, index: number) => {
               const {svg: pathSvg} = data[index];
               const key = path + '-' + index;
@@ -185,54 +184,55 @@ const ChartGrouped: React.FC<Props> = props => {
               );
             })}
 
-            {renderLineMarker(extraProps)}
+            {xSelected > -1 && renderLineMarker(extraProps)}
 
+            {/*render points*/}
             {paths.points.map(
               (points: Array<{x: number; y: number}>, index: number) => {
                 const {svg: pathSvg} = data[index];
                 // console.log('paths.points.map', {points});
-                return points.map(
-                  (point: {x: number; y: number}, pIndex: number) => {
-                    const isSelected = xSelected === point.x;
-                    // console.log('point', {
-                    //   point,
-                    //   xSelected,
-                    //   xScale: x(xSelected),
-                    // });
-                    const key =
-                      point.x + '-' + point.y + '-' + index + '-' + pIndex;
-                    const cx = x(point.x);
-                    const cy = y(point.y);
-                    const r = isSelected ? 3 : 2;
-                    const fill = isSelected ? '#303137' : 'none';
-                    return (
-                      <G key={`points${key}`}>
-                        {isSelected && (
-                          <Circle
-                            // x={x(0.4)}
-                            key={key + 'selected'}
-                            cx={cx}
-                            cy={cy}
-                            r={5}
-                            {...pathSvg}
-                            stroke={fill}
-                          />
-                        )}
-                        {isSelected && (
-                          <Circle
-                            // x={x(0.4)}
-                            key={key}
-                            cx={cx}
-                            cy={cy}
-                            r={r}
-                            {...pathSvg}
-                            fill={pathSvg.stroke}
-                          />
-                        )}
-                      </G>
-                    );
-                  },
-                );
+                return points.map((point, pIndex, pArray) => {
+                  const isSelected = xSelected === point.x;
+                  const isLast = pIndex === pArray.length - 1;
+                  const showLastPoint = xSelected === -1 && isLast;
+                  // console.log('point', {
+                  //   point,
+                  //   xSelected,
+                  //   xScale: x(xSelected),
+                  // });
+                  const key =
+                    point.x + '-' + point.y + '-' + index + '-' + pIndex;
+                  const cx = x(point.x);
+                  const cy = y(point.y);
+                  const r = isSelected ? 3 : 2;
+                  const fill = isSelected ? '#303137' : 'none';
+                  return (
+                    <G key={`points${key}`}>
+                      {(isSelected || showLastPoint) && (
+                        <Circle
+                          // x={x(0.4)}
+                          key={key + 'selected'}
+                          cx={cx}
+                          cy={cy}
+                          r={5}
+                          {...pathSvg}
+                          stroke={fill}
+                        />
+                      )}
+                      {(isSelected || showLastPoint) && (
+                        <Circle
+                          // x={x(0.4)}
+                          key={key + 'selected2'}
+                          cx={cx}
+                          cy={cy}
+                          r={r}
+                          {...pathSvg}
+                          fill={pathSvg.stroke}
+                        />
+                      )}
+                    </G>
+                  );
+                });
               },
             )}
           </Svg>
