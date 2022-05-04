@@ -14,6 +14,7 @@ const Screen = () => {
   useEffect(() => {
     //data loading simulation
     setTimeout(() => {
+      setChartType(ChartComponent.types._1D);
       setData(generateDataByType(ChartComponent.types._1D));
     }, 1000);
   }, []);

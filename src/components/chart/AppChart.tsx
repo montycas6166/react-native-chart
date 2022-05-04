@@ -4,39 +4,6 @@ import {Theme, useTheme} from '~/theme';
 import {DataItem} from '~/generate.data.helper';
 import ChartGrouped from '~/components/chart/ChartGrouped';
 
-// const chartData = [
-//   {
-//     data: [
-//       {x: 10, y: 33.4},
-//       {x: 30, y: 33.6},
-//       {x: 40, y: 33.2},
-//       {x: 50, y: 33.4},
-//       {x: 70, y: 33.5},
-//       {x: 100, y: 33.5},
-//     ],
-//     svg: {
-//       stroke: '#11ca3e',
-//       strokeWidth: 3,
-//       strokeLinecap: 'round',
-//       strokeLinejoin: 'miter',
-//     },
-//   },
-// ];
-// const allY = chartData[0].data.map(p => p.y);
-// const allX = chartData[0].data.map(p => p.x);
-// const minAllY = allY.length > 0 ? Math.min(...allY) : 0;
-// const maxAllY = allY.length > 0 ? Math.max(...allY) : 1;
-// const yMin = minAllY - 0.01 * minAllY;
-// const yMax = maxAllY + 0.01 * maxAllY;
-//
-// const minAllX = allX.length > 0 ? Math.min(...allX) : 0;
-// const maxAllX = allX.length > 0 ? Math.max(...allX) : 1;
-// const xMax = maxAllX + 0.02 * maxAllX;
-// const xMin = minAllX - 0.02 * maxAllX;
-//
-// const numberOfYTicks = 6;
-// const numberOfXTicks = 20;
-
 const defaultLineColor = '#04e23b';
 
 type ChartComponentProps = {
@@ -71,13 +38,13 @@ const AppChart: React.FC<ChartComponentProps> = props => {
     const allX = chartData[0].data.map(p => p.x);
     const minAllY = allY.length > 0 ? Math.min(...allY) : 0;
     const maxAllY = allY.length > 0 ? Math.max(...allY) : 1;
-    const yMin = minAllY; // - 0.01 * minAllY;
-    const yMax = maxAllY; // + 0.01 * maxAllY;
+    const yMin = minAllY - 0.2 * (maxAllY - minAllY);
+    const yMax = maxAllY + 0.2 * (maxAllY - minAllY);
 
     const minAllX = allX.length > 0 ? Math.min(...allX) : 0;
     const maxAllX = allX.length > 0 ? Math.max(...allX) : 1;
-    const xMin = minAllX; // - 0.02 * maxAllX;
-    const xMax = maxAllX; // + 0.02 * maxAllX;
+    const xMin = minAllX - 0.03 * (maxAllX - minAllX);
+    const xMax = maxAllX + 0.03 * (maxAllX - minAllX);
 
     const numberOfYTicks = 6;
     const numberOfXTicks = 20;
@@ -96,10 +63,10 @@ const AppChart: React.FC<ChartComponentProps> = props => {
     <View style={s?.root}>
       <View style={s?.top} />
       <ChartGrouped
+        onChangeY={onChangeY}
         showGrid={false}
         xAccessor={({item}) => item.x}
         yAccessor={({item}) => item.y}
-        // xSelected={1650672000000}
         selectedLineMarkerColor={'#eee'}
         xMin={genData.xMin}
         xMax={genData.xMax}
@@ -108,12 +75,12 @@ const AppChart: React.FC<ChartComponentProps> = props => {
         numberOfXTicks={genData.numberOfXTicks}
         numberOfYTicks={genData.numberOfYTicks}
         data={genData.chartData}
-        contentInset={{
-          left: 10,
-          right: 10,
-          bottom: 10,
-          top: 10,
-        }}
+        // contentInset={{
+        //   left: 10,
+        //   right: 10,
+        //   bottom: 10,
+        //   top: 10,
+        // }}
         style={s?.chart}
       />
     </View>
